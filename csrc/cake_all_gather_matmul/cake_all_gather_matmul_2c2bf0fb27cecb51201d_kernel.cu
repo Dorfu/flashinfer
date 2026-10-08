@@ -153,10 +153,11 @@ kernel_cake_all_gather_matmul_2c2bf0fb27cecb51201d(const __grid_constant__ CUten
                             unsigned int* _gca_p = reinterpret_cast<unsigned int*>(ready) + (peer * (((M + 127) / 128 * 128 + signal_rows - 1) / signal_rows) + off_m / signal_rows);
                             while (true) {
                                 unsigned int _gca_v;
-                                asm volatile("ld.acquire.sys.global.u32 %0, [%1];" : "=r"(_gca_v) : "l"(_gca_p));
+                                asm volatile("ld.acquire.sys.global.u32 %0, [%1];" : "=r"(_gca_v) : "l"(_gca_p) : "memory");
                                 if (_gca_v >= (unsigned int)(ready_target)) break;
                             }
                         }
+                        asm volatile("fence.proxy.async.global;" ::: "memory");
                     }
                 }
                 #pragma unroll 1
