@@ -40,7 +40,9 @@ environment variables, described under :ref:`apiquantization`.
 On SM90, the CUTLASS backend's DeepSeek-style FP8 block-scale path fuses the
 per-token-group activation quantization into the expand and activation kernels
 by default. Setting ``FLASHINFER_MOE_FUSED_BLOCKSCALE_QUANT=0`` restores the
-standalone quantization kernels; outputs are bitwise identical either way.
+standalone quantization kernels; outputs are bitwise identical either way. The
+fused path does not support LoRA, so LoRA callers must disable it with this
+environment variable.
 
 .. autosummary::
     :toctree: ../generated

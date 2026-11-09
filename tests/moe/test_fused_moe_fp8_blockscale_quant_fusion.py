@@ -17,7 +17,7 @@ import tempfile
 import pytest
 import torch
 
-TOKEN_COUNTS = [64, 1452, 4096]
+TOKEN_COUNTS = [1, 12, 64, 1452, 4096]
 
 _WORKER = """
 import sys, torch
