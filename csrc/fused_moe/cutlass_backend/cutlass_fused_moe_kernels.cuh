@@ -2988,8 +2988,14 @@ void doActivation(T* output, GemmOutputType const* gemm_result, float const* fp8
     {
       // The fused pre-FC2 1x128 quant is orthogonal to the activation function; it is only ever
       // requested for the plain (NONE block-scaling) bf16 path.
-      if (fp8_block_scale_out.fp8_out != nullptr) {
-        return fn(NONE, std::false_type{}, std::false_type{}, std::true_type{});
+      if constexpr (std::is_same_v<T, __nv_bfloat16> &&
+                    std::is_same_v<GemmOutputType, __nv_bfloat16>) {
+        if (fp8_block_scale_out.fp8_out != nullptr) {
+          return fn(NONE, std::false_type{}, std::false_type{}, std::true_type{});
+        }
+      } else {
+        TLLM_CHECK_WITH_INFO(fp8_block_scale_out.fp8_out == nullptr,
+                             "Fused FP8 block-scale activation output requires BF16 activations");
       }
       return fn(NONE, std::false_type{}, std::false_type{}, std::false_type{});
     }
